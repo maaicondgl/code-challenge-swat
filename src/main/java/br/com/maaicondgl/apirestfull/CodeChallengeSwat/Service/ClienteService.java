@@ -14,6 +14,7 @@ public class ClienteService {
     ClienteRepository clienteRepository;
 
     public ClienteEntity create(ClienteEntity cliente) {
+
         return clienteRepository.save(cliente);
     }
 

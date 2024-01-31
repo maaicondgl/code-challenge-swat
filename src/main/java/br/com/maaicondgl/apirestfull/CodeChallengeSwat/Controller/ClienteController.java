@@ -3,6 +3,7 @@ package br.com.maaicondgl.apirestfull.CodeChallengeSwat.Controller;
 import java.util.List;
 
 import br.com.maaicondgl.apirestfull.CodeChallengeSwat.Model.ClienteEntity;
+import br.com.maaicondgl.apirestfull.CodeChallengeSwat.Repository.ClienteRepository;
 import br.com.maaicondgl.apirestfull.CodeChallengeSwat.Service.ClienteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -21,6 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class ClienteController {
     @Autowired
     private ClienteService service;
+    @Autowired
+    private ClienteRepository clienteRepository;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<ClienteEntity> findAll() {
@@ -49,4 +52,14 @@ public class ClienteController {
         service.delete(id);
         return  ResponseEntity.noContent().build();
     }
+    @GetMapping (value = "/cadastro")
+    public String form(){
+        return "cliente/formCliente";
+    }
+    @PostMapping  (value = "/cadastro")
+    public String form(ClienteEntity clienteEntity){
+        clienteRepository.save(clienteEntity);
+        return "redirect:/cadastrarCliente";
+    }
+
 }
