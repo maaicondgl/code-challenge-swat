@@ -5,6 +5,7 @@ import java.util.List;
 import br.com.maaicondgl.apirestfull.CodeChallengeSwat.Model.ContaBancariaEntity;
 import br.com.maaicondgl.apirestfull.CodeChallengeSwat.Service.ContaBancariaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -28,25 +29,43 @@ public class ContaBancariaController {
     }
 
     @GetMapping(value = "/{idConta}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ContaBancariaEntity findById(@PathVariable(value = "idConta")Long idConta){
-        return contaService.findById(idConta);
+    public ResponseEntity<ContaBancariaEntity> findById(@PathVariable(value = "idConta")Long idConta){
+        ContaBancariaEntity contaBancaria = contaService.findById(idConta);
+        if (contaBancaria != null){
+
+            return  ResponseEntity.ok(contaService.findById(idConta));
+        }
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ContaBancariaEntity create(@RequestBody ContaBancariaEntity conta){
-        return  contaService.create(conta);
-
+    public ResponseEntity<ContaBancariaEntity> create(@RequestBody ContaBancariaEntity conta){
+        return ResponseEntity.ok(contaService.create(conta));
     }
+
     @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ContaBancariaEntity update(@RequestBody ContaBancariaEntity conta){
-        return  contaService.update(conta);
-
+    public ResponseEntity<ContaBancariaEntity>update(@RequestBody ContaBancariaEntity conta){
+        return ResponseEntity.ok(contaService.update(conta));
     }
+
     @DeleteMapping(value = "/{idConta}")
     public ResponseEntity<?> delete(@PathVariable(value = "idConta")Long idConta) {
         contaService.delete(idConta);
         return  ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/buscarconta/{conta}/{agenciaBancaria}")
+    public ResponseEntity<?> realizarConsultaConta(@PathVariable Long conta, @PathVariable(name = "agenciaBancaria") Long agenciaBancaria) {
+
+        ContaBancariaEntity contaBancaria = contaService.realizarConsultaDeConta(conta, agenciaBancaria);
+
+        if (contaBancaria != null) {
+            return ResponseEntity.ok(contaBancaria);
+        }
+
+        return new ResponseEntity<>("Conta Bancária não encontrada.", HttpStatus.NOT_FOUND);
     }
 
 }

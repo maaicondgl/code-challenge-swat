@@ -22,9 +22,13 @@ public class ContaBancariaService {
     }
 
     public ContaBancariaEntity create(ContaBancariaEntity conta){
-
+        if (!conta.getChequeEspecial()) {
+            Double valorLimite = 0.00;
+            conta.setLimite(valorLimite);
+        }
         return contaRepository.save(conta);
     }
+
     public ContaBancariaEntity update(ContaBancariaEntity conta){
 
         //       AQUI VAI NO BANCO E RECUPERA A PESSOA POR ID
@@ -42,5 +46,15 @@ public class ContaBancariaService {
 //         Busca o ID na base passando  para variavel entity em seguida deleta a entidade no banco(Conta)
         var entity = contaRepository.findById(IdConta).orElseThrow(() -> new ResourceNotFoundException("ID Conta não encontrado!"));
         contaRepository.delete(entity);
+    }
+    public ContaBancariaEntity realizarAlteracaoConta(ContaBancariaEntity conta) {
+        if (!conta.getChequeEspecial()) {
+            Double valorLimite = 0.00;
+            conta.setLimite(valorLimite);
+        }
+        return contaRepository.save(conta);
+    }
+    public ContaBancariaEntity realizarConsultaDeConta(Long conta, Long agenciaBancaroa) {
+        return contaRepository.findByContaAndAgenciaBancaria(conta, agenciaBancaroa);
     }
 }

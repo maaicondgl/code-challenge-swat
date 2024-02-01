@@ -31,7 +31,20 @@ public class ContaBancariaEntity implements Serializable {
     @JoinColumn(name = "saldo")
     private Double saldo;
 
+    private double limite;
+    private boolean chequeEspecial;
+
     public ContaBancariaEntity() {
+    }
+
+    public ContaBancariaEntity(Long idConta, String nomeBanco, Long agenciaBancaria, Long conta, Double saldo, double limite, boolean chequeEspecial) {
+        this.idConta = idConta;
+        this.nomeBanco = nomeBanco;
+        this.agenciaBancaria = agenciaBancaria;
+        this.conta = conta;
+        this.saldo = saldo;
+        this.limite = limite;
+        this.chequeEspecial = chequeEspecial;
     }
 
     public Long getIdConta() {
@@ -74,6 +87,22 @@ public class ContaBancariaEntity implements Serializable {
         this.saldo = saldo;
     }
 
+    public double getLimite() {
+        return limite;
+    }
+
+    public void setLimite(double limite) {
+        this.limite = limite;
+    }
+
+    public boolean getChequeEspecial() {
+        return chequeEspecial;
+    }
+
+    public void setChequeEspecial(boolean chequeEspecial) {
+        this.chequeEspecial = chequeEspecial;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -84,6 +113,18 @@ public class ContaBancariaEntity implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(getIdConta(), getNomeBanco(), getAgenciaBancaria(), getConta(), getSaldo());
+    }
+
+    @Override
+    public String toString() {
+        return "ContaBancariaEntity{" +
+                "nomeBanco='" + nomeBanco + '\'' +
+                ", agenciaBancaria=" + agenciaBancaria +
+                ", conta=" + conta +
+                ", saldo=" + saldo +
+                ", limite=" + limite +
+                ", chequeEspecial=" + chequeEspecial +
+                '}';
     }
 }
 
