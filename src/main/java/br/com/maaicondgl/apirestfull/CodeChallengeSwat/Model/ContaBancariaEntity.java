@@ -1,47 +1,32 @@
 package br.com.maaicondgl.apirestfull.CodeChallengeSwat.Model;
 
 import java.io.Serializable;
-import java.util.Objects;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "contas")
 public class ContaBancariaEntity implements Serializable {
-    private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Long idConta;
-
-    @JoinColumn(name = "nome_banco")
-    private String nomeBanco;
-
-    @JoinColumn(name = "agencia")
-    private Long agenciaBancaria;
-
-    @JoinColumn(name = "conta")
-    private Long conta;
-
-    @JoinColumn(name = "saldo")
-    private Double saldo;
-
+    private String conta;
+    private String agencia;
+    private double saldo;
     private double limite;
-    private boolean chequeEspecial;
+    private boolean chequeEspecial; // Se saldo for < R$1000 cheque especial False
 
     public ContaBancariaEntity() {
     }
 
-    public ContaBancariaEntity(Long idConta, String nomeBanco, Long agenciaBancaria, Long conta, Double saldo, double limite, boolean chequeEspecial) {
+    public ContaBancariaEntity(Long idConta, String conta, String agencia, double saldo, double limite, boolean chequeEspecial) {
         this.idConta = idConta;
-        this.nomeBanco = nomeBanco;
-        this.agenciaBancaria = agenciaBancaria;
         this.conta = conta;
+        this.agencia = agencia;
         this.saldo = saldo;
         this.limite = limite;
         this.chequeEspecial = chequeEspecial;
@@ -55,35 +40,27 @@ public class ContaBancariaEntity implements Serializable {
         this.idConta = idConta;
     }
 
-    public String getNomeBanco() {
-        return nomeBanco;
-    }
-
-    public void setNomeBanco(String nomeBanco) {
-        this.nomeBanco = nomeBanco;
-    }
-
-    public Long getAgenciaBancaria() {
-        return agenciaBancaria;
-    }
-
-    public void setAgenciaBancaria(Long agenciaBancaria) {
-        this.agenciaBancaria = agenciaBancaria;
-    }
-
-    public Long getConta() {
+    public String getConta() {
         return conta;
     }
 
-    public void setConta(Long conta) {
+    public void setConta(String conta) {
         this.conta = conta;
     }
 
-    public Double getSaldo() {
+    public String getAgencia() {
+        return agencia;
+    }
+
+    public void setAgencia(String agencia) {
+        this.agencia = agencia;
+    }
+
+    public double getSaldo() {
         return saldo;
     }
 
-    public void setSaldo(Double saldo) {
+    public void setSaldo(double saldo) {
         this.saldo = saldo;
     }
 
@@ -104,23 +81,11 @@ public class ContaBancariaEntity implements Serializable {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ContaBancariaEntity that)) return false;
-        return Objects.equals(getIdConta(), that.getIdConta()) && Objects.equals(getNomeBanco(), that.getNomeBanco()) && Objects.equals(getAgenciaBancaria(), that.getAgenciaBancaria()) && Objects.equals(getConta(), that.getConta()) && Objects.equals(getSaldo(), that.getSaldo());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getIdConta(), getNomeBanco(), getAgenciaBancaria(), getConta(), getSaldo());
-    }
-
-    @Override
     public String toString() {
         return "ContaBancariaEntity{" +
-                "nomeBanco='" + nomeBanco + '\'' +
-                ", agenciaBancaria=" + agenciaBancaria +
-                ", conta=" + conta +
+                "idConta=" + idConta +
+                ", conta='" + conta + '\'' +
+                ", agencia='" + agencia + '\'' +
                 ", saldo=" + saldo +
                 ", limite=" + limite +
                 ", chequeEspecial=" + chequeEspecial +

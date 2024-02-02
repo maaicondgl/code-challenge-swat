@@ -1,12 +1,9 @@
 package br.com.maaicondgl.apirestfull.CodeChallengeSwat.Controller;
 
-import java.util.List;
-
 import br.com.maaicondgl.apirestfull.CodeChallengeSwat.Model.ContaBancariaEntity;
 import br.com.maaicondgl.apirestfull.CodeChallengeSwat.Service.ContaBancariaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,51 +18,34 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/contaBancaria")
 public class ContaBancariaController {
     @Autowired
-    private ContaBancariaService contaService;
+    private ContaBancariaService contaBancariaService;
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<ContaBancariaEntity> listarContas(){
-        return contaService.listarContas();
+    @PostMapping
+    public ResponseEntity<ContaBancariaEntity> registerAccount(@RequestBody ContaBancariaEntity contaBancaria){
+        return ResponseEntity.ok(contaBancariaService.registerAccount(contaBancaria));
     }
 
-    @GetMapping(value = "/{idConta}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ContaBancariaEntity> findById(@PathVariable(value = "idConta")Long idConta){
-        ContaBancariaEntity contaBancaria = contaService.findById(idConta);
-        if (contaBancaria != null){
+    //pesquisar conta não pelo id, mas pela conta e agência que é mais usual
+    @GetMapping("/search/{conta}/{agencia}")
+    public ResponseEntity<?> ConsultationAccount(@PathVariable String conta, @PathVariable String agencia){
 
-            return  ResponseEntity.ok(contaService.findById(idConta));
-        }
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
+        ContaBancariaEntity contaBancaria = contaBancariaService.ConsultationAccount(conta, agencia);
 
-    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE,
-            consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ContaBancariaEntity> create(@RequestBody ContaBancariaEntity conta){
-        return ResponseEntity.ok(contaService.create(conta));
-    }
-
-    @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE,
-            consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ContaBancariaEntity>update(@RequestBody ContaBancariaEntity conta){
-        return ResponseEntity.ok(contaService.update(conta));
-    }
-
-    @DeleteMapping(value = "/{idConta}")
-    public ResponseEntity<?> delete(@PathVariable(value = "idConta")Long idConta) {
-        contaService.delete(idConta);
-        return  ResponseEntity.noContent().build();
-    }
-
-    @GetMapping("/buscarconta/{conta}/{agenciaBancaria}")
-    public ResponseEntity<?> realizarConsultaConta(@PathVariable Long conta, @PathVariable(name = "agenciaBancaria") Long agenciaBancaria) {
-
-        ContaBancariaEntity contaBancaria = contaService.realizarConsultaDeConta(conta, agenciaBancaria);
-
-        if (contaBancaria != null) {
+        if(contaBancaria != null){
             return ResponseEntity.ok(contaBancaria);
         }
+        return new ResponseEntity<>("Conta Bancária não encontrada.",HttpStatus.NOT_FOUND);
+    }
 
-        return new ResponseEntity<>("Conta Bancária não encontrada.", HttpStatus.NOT_FOUND);
+    @PutMapping
+    public ResponseEntity<ContaBancariaEntity> accountChange(@RequestBody ContaBancariaEntity contaBancaria){
+        return ResponseEntity.ok(contaBancariaService.accountChange(contaBancaria));
+    }
+
+    @DeleteMapping(value = "/excluir/{idConta}")
+    public ResponseEntity<?> delete(@PathVariable Long idConta) {
+        contaBancariaService.deleteContaById(idConta);
+        return  ResponseEntity.noContent().build();
     }
 
 }

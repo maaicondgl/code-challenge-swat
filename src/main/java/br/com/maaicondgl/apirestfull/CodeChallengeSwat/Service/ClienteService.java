@@ -1,46 +1,46 @@
 package br.com.maaicondgl.apirestfull.CodeChallengeSwat.Service;
 
-import java.util.List;
+import java.util.Optional;
 
 import br.com.maaicondgl.apirestfull.CodeChallengeSwat.Exceptions.ResourceNotFoundException;
 import br.com.maaicondgl.apirestfull.CodeChallengeSwat.Model.ClienteEntity;
+import br.com.maaicondgl.apirestfull.CodeChallengeSwat.Model.ContaBancariaEntity;
 import br.com.maaicondgl.apirestfull.CodeChallengeSwat.Repository.ClienteRepository;
+import br.com.maaicondgl.apirestfull.CodeChallengeSwat.Repository.ContaBancariaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ClienteService {
     @Autowired
-    ClienteRepository clienteRepository;
+    private ClienteRepository clienteRepository;
+    @Autowired
+    private ContaBancariaService contaBancariaService;
 
-    public ClienteEntity create(ClienteEntity cliente) {
+    @Autowired
+    private ContaBancariaRepository contaBancariaRepository;
 
+    public Optional<ClienteEntity> searchCustomer(String cpf) {
+        return clienteRepository.findById(cpf);
+    }
+
+    public ClienteEntity createCustomer(ClienteEntity cliente) {
+        ContaBancariaEntity conta = contaBancariaService.registerAccount(cliente.getContaBancaria());
+
+        cliente.setContaBancaria(conta);
+        cliente = clienteRepository.save(cliente);
+        return cliente;
+    }
+
+    public ClienteEntity updateCustomer(ClienteEntity cliente) throws ResourceNotFoundException {
+
+        ContaBancariaEntity conta= contaBancariaService.accountChange(cliente.getContaBancaria());
+
+        cliente.setContaBancaria(conta);
         return clienteRepository.save(cliente);
     }
 
-    public ClienteEntity update(ClienteEntity cliente) {
-
-        var  entity = clienteRepository.findById(cliente.getId()).orElseThrow(() -> new ResourceNotFoundException("ID Cliente não encontrado"));
-
-        entity.setName(cliente.getName());
-        entity.setPhoneNumber(cliente.getPhoneNumber());
-        entity.setAddress(cliente.getAddress());
-
-        return clienteRepository.save(cliente);
+    public void deletarClientePorCpf(String cpf) {
+        clienteRepository.deleteByCpf(cpf);
     }
-
-    public void delete(Long id) {
-        var  entity = clienteRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("ID Cliente não encontrado"));
-
-        clienteRepository.delete(entity);
-    }
-
-    public ClienteEntity findById(Long id) {
-        return clienteRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("ID Cliente não encontrado"));
-    }
-
-    public List<ClienteEntity> findAll() {
-        return clienteRepository.findAll();
-    }
-
 }

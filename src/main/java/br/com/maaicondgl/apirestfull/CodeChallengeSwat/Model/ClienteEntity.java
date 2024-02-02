@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -16,73 +18,70 @@ import jakarta.persistence.Table;
 @Table(name = "clientes")
 @JsonPropertyOrder({"id","Name", "phoneNumber", "address"})
 public class ClienteEntity implements Serializable {
-    private static final long serialVersionUID = 1L;
+    @Column(unique=true)
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String cpf;
+    @Column(unique=true)
+    private String rg;
+    private String nome;
+    @OneToOne(cascade = CascadeType.PERSIST)
+    private ContaBancariaEntity contaBancaria;
 
-    @JoinColumn(name = "name", nullable = false)
-    private String Name;
-    @JoinColumn(name = "phone_number", nullable = false)
-    private String phoneNumber;
-    @JoinColumn(name = "address", nullable = false)
-    private String address;
-    @OneToOne
-    @JoinColumn(name = "id_conta", referencedColumnName = "idConta")
-    private ContaBancariaEntity contaBancariaEntity;
+    @Override
+    public int hashCode() {
+        return Objects.hash(cpf);
+    }
 
     public ClienteEntity() {
     }
 
-    public Long getId() {
-        return id;
+    public ClienteEntity(String cpf, String rg, String nome, ContaBancariaEntity contaBancaria) {
+        this.cpf = cpf;
+        this.rg = rg;
+        this.nome = nome;
+        this.contaBancaria = contaBancaria;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public String getCpf() {
+        return cpf;
     }
 
-    public String getName() {
-        return Name;
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
     }
 
-    public void setName(String name) {
-        Name = name;
+    public String getRg() {
+        return rg;
     }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
+    public void setRg(String rg) {
+        this.rg = rg;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+    public String getNome() {
+        return nome;
     }
 
-    public String getAddress() {
-        return address;
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public ContaBancariaEntity getContaBancaria() {
+        return contaBancaria;
     }
 
-    public ContaBancariaEntity getContaBancariaEntity() {
-        return contaBancariaEntity;
+    public void setContaBancaria(ContaBancariaEntity contaBancaria) {
+        this.contaBancaria = contaBancaria;
     }
 
-    public void setContaBancariaEntity(ContaBancariaEntity contaBancariaEntity) {
-        this.contaBancariaEntity = contaBancariaEntity;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ClienteEntity that)) return false;
-        return Objects.equals(getId(), that.getId()) && Objects.equals(getName(), that.getName()) && Objects.equals(getPhoneNumber(), that.getPhoneNumber()) && Objects.equals(getAddress(), that.getAddress()) && Objects.equals(getContaBancariaEntity(), that.getContaBancariaEntity());
-    }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(getId(), getName(), getPhoneNumber(), getAddress(), getContaBancariaEntity());
+    public String toString() {
+        return "ClienteEntity{" +
+                "cpf='" + cpf + '\'' +
+                ", rg='" + rg + '\'' +
+                ", nome='" + nome + '\'' +
+                ", contaBancaria=" + contaBancaria +
+                '}';
     }
 }

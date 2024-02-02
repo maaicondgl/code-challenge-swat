@@ -6,55 +6,52 @@ import br.com.maaicondgl.apirestfull.CodeChallengeSwat.Exceptions.ResourceNotFou
 import br.com.maaicondgl.apirestfull.CodeChallengeSwat.Model.ContaBancariaEntity;
 import br.com.maaicondgl.apirestfull.CodeChallengeSwat.Repository.ContaBancariaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 @Service
 public class ContaBancariaService {
-
     @Autowired
-    ContaBancariaRepository contaRepository;
-    public ContaBancariaEntity findById(Long idConta){
+    private ContaBancariaRepository contaBancariaRepository;
 
-        return contaRepository.findById(idConta).orElseThrow(() -> new ResourceNotFoundException("ID não encontrado"));
-    }
-    public List<ContaBancariaEntity> listarContas(){
-        return contaRepository.findAll();
+    private ContaBancariaEntity contaBancariaEntity;
+
+    public ContaBancariaEntity ConsultationAccount(String numConta, String numAgencia) {
+        return contaBancariaRepository.findByContaAndAgencia(numConta, numAgencia);
     }
 
-    public ContaBancariaEntity create(ContaBancariaEntity conta){
-        if (!conta.getChequeEspecial()) {
-            Double valorLimite = 0.00;
-            conta.setLimite(valorLimite);
+    public ContaBancariaEntity accountChange(ContaBancariaEntity contaBancaria) {
+        if (contaBancaria.getSaldo() > 1000) {
+            contaBancaria.setChequeEspecial(true);
+        } else {
+            contaBancaria.setChequeEspecial(false);
         }
-        return contaRepository.save(conta);
+        return contaBancariaRepository.save(contaBancaria);
     }
 
-    public ContaBancariaEntity update(ContaBancariaEntity conta){
-
-        //       AQUI VAI NO BANCO E RECUPERA A PESSOA POR ID
-        var  entity = contaRepository.findById(conta.getIdConta()).orElseThrow(() -> new ResourceNotFoundException("ID Conta não encontrado"));
-
-        entity.setNomeBanco(conta.getNomeBanco());
-        entity.setAgenciaBancaria(conta.getAgenciaBancaria());
-        entity.setConta(conta.getConta());
-        entity.setSaldo(conta.getSaldo());
-
-        return contaRepository.save(conta);
-    }
-
-    public void delete(Long IdConta){
-//         Busca o ID na base passando  para variavel entity em seguida deleta a entidade no banco(Conta)
-        var entity = contaRepository.findById(IdConta).orElseThrow(() -> new ResourceNotFoundException("ID Conta não encontrado!"));
-        contaRepository.delete(entity);
-    }
-    public ContaBancariaEntity realizarAlteracaoConta(ContaBancariaEntity conta) {
-        if (!conta.getChequeEspecial()) {
-            Double valorLimite = 0.00;
-            conta.setLimite(valorLimite);
+    public ContaBancariaEntity registerAccount(ContaBancariaEntity contaBancaria) {
+        String conta = contaBancaria.getConta();
+        String agencia = contaBancaria.getAgencia();
+        // Se saldo for > R$1000 cheque especial True
+        if (contaBancaria.getSaldo() > 1000) {
+            contaBancaria.setChequeEspecial(true);
+        } else {
+            contaBancaria.setChequeEspecial(false);
         }
-        return contaRepository.save(conta);
+
+        if (conta != null && agencia != null){
+            contaBancaria.setConta(conta);
+            contaBancaria.setAgencia(agencia);
+        }else {
+            throw new IllegalArgumentException("Conta e agencia não pode ser Nulas");
+        }
+        return contaBancariaRepository.save(contaBancaria);
     }
-    public ContaBancariaEntity realizarConsultaDeConta(Long conta, Long agenciaBancaroa) {
-        return contaRepository.findByContaAndAgenciaBancaria(conta, agenciaBancaroa);
+
+    public void deleteContaById(Long idConta) {
+        contaBancariaRepository.deleteByIdConta(idConta);
     }
+
 }
