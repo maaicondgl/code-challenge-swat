@@ -25,7 +25,7 @@ public class ClienteController {
     @Autowired
     private ClienteService clienteService;
 
-    @GetMapping("/consultapf/{cpf}")
+    @GetMapping("/consultacpf/{cpf}")
     public ResponseEntity<?> searchCustomer(@PathVariable String cpf){
         // CPF do cliente é usado como ID
         Optional<ClienteEntity> opcaoCpf = clienteService.searchCustomer(cpf);
