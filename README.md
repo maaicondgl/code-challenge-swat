@@ -23,3 +23,5 @@ Este é um projeto em Java usando o framework Spring Boot.
  # <h3>Conta</h3>
 ![image](https://github.com/maaicondgl/code-challenge-swat/assets/87240984/8d6b8716-6a61-4395-8c1f-58850e0c9086)
 
+# Docker 
+![image](https://github.com/maaicondgl/code-challenge-swat/assets/87240984/2b327289-d76f-4b62-8053-9d3635c79994)
