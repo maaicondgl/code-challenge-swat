@@ -1,5 +1,6 @@
 package br.com.maaicondgl.apirestfull.CodeChallengeSwat.Controller;
 
+import br.com.maaicondgl.apirestfull.CodeChallengeSwat.Exceptions.ResourceNotFoundException;
 import br.com.maaicondgl.apirestfull.CodeChallengeSwat.Model.ContaBancariaEntity;
 import br.com.maaicondgl.apirestfull.CodeChallengeSwat.Service.ContaBancariaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/contaBancaria")
 public class ContaBancariaController {
@@ -25,7 +29,7 @@ public class ContaBancariaController {
         return ResponseEntity.ok(contaBancariaService.registerAccount(contaBancaria));
     }
 
-    //pesquisar conta não pelo id, mas pela conta e agência que é mais usual
+    //pesquisar por conta e agencia
     @GetMapping("/search/{conta}/{agencia}")
     public ResponseEntity<?> ConsultationAccount(@PathVariable String conta, @PathVariable String agencia){
 
@@ -47,5 +51,18 @@ public class ContaBancariaController {
         contaBancariaService.deleteContaById(idConta);
         return  ResponseEntity.noContent().build();
     }
-
+    @PostMapping("/{conta}/saque/{valor}")
+    public ResponseEntity<Map<String, Object>> sacarComJuros(@PathVariable String conta, @PathVariable double valor) throws ResourceNotFoundException {
+        ContaBancariaEntity contaBancaria = contaBancariaService.sacarChequeEspecial(conta, valor);
+        double limiteAtual = contaBancaria.getLimite();
+        try {
+            Map<String, Object> response = new HashMap<>();
+            String mensagem = "Cheque especial Sacado, valor atual disponével";
+            response.put("SwatBank informa: " + mensagem, limiteAtual);
+            response.put("contaBancaria", contaBancaria);
+            return ResponseEntity.ok(response);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(null); // Retorna uma resposta de erro 400 Bad Request
+        }
+    }
 }

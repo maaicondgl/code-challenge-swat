@@ -11,6 +11,8 @@ import org.springframework.stereotype.Repository;
 public interface ContaBancariaRepository extends JpaRepository<ContaBancariaEntity, Long> {
     ContaBancariaEntity findByContaAndAgencia(String conta, String agencia);
 
+    ContaBancariaEntity findByConta(String conta);
+
     @Transactional
     @Modifying
     @Query("DELETE FROM ContaBancariaEntity c WHERE c.idConta = ?1")
