@@ -31,6 +31,7 @@ public class ContaBancariaService {
     public ContaBancariaEntity registerAccount(ContaBancariaEntity contaBancaria) {
         String conta = contaBancaria.getConta();
         String agencia = contaBancaria.getAgencia();
+
         // Se saldo for > R$1000 cheque especial True
         if (contaBancaria.getSaldo() > 1000) {
             contaBancaria.setChequeEspecial(true);
@@ -59,6 +60,7 @@ public class ContaBancariaService {
             double limiteAtual = contaBancaria.getLimite();
             double saldo = contaBancaria.getSaldo();
             double valorComJuros = valor;
+            double jurosChequeEspecial = contaBancaria.getJurosChequeEspecial();
 
             // Verifica se o valor do saque ultrapassa o limite atual
 
@@ -71,6 +73,8 @@ public class ContaBancariaService {
                     long dias = dataAtual.toEpochDay() - dataSaque.toEpochDay();
                     double juros = valor * 0.02 * dias; // Juros de 2% ao dia
                     valorComJuros = valor + juros;
+                    juros = valorComJuros;
+                    contaBancaria.setJurosChequeEspecial(juros);
                     if (valorComJuros > saldo) {
                         throw new IllegalArgumentException("Saldo insuficiente e cheque especial não cobre o saque com juros.");
                     }
@@ -78,13 +82,20 @@ public class ContaBancariaService {
                     throw new IllegalArgumentException("Saldo insuficiente e cheque especial desativado. Saque não realizado.");
                 }
         }
+
         // valida se limite atual é 0, se for 0 seta no banco cheque Especial false
         if (limiteAtual == 0.00 ||  limiteAtual < 0){
             contaBancaria.setChequeEspecial(false);
             throw new ResourceNotFoundException("Essa conta não possui limite disponível");
         }
-        contaBancaria.setLimite(limiteAtual - valorComJuros);
-
+        // verifica o se existe valor proveniente do juros do cheque especial, se sim subtrai do saldo e 0 o valor do juros atual
+        if (jurosChequeEspecial > 0) {
+            double novoSaldo = saldo - jurosChequeEspecial;
+            contaBancaria.setSaldo(novoSaldo);
+            if(novoSaldo <= 0){
+                contaBancaria.setJurosChequeEspecial(0);
+            }
+        }
         // Atualiza a entidade da conta bancária no banco de dados
         return contaBancariaRepository.save(contaBancaria);
     }

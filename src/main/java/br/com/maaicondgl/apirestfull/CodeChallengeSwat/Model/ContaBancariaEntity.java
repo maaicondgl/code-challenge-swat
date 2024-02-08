@@ -19,6 +19,7 @@ public class ContaBancariaEntity implements Serializable {
     private double saldo;
     private double limite;
     private boolean chequeEspecial; // Se saldo for < R$1000 cheque especial False
+    private double jurosChequeEspecial;
 
     public ContaBancariaEntity() {
     }
@@ -30,6 +31,7 @@ public class ContaBancariaEntity implements Serializable {
         this.saldo = saldo;
         this.limite = limite;
         this.chequeEspecial = chequeEspecial;
+        this.jurosChequeEspecial = jurosChequeEspecial;
     }
 
     public Long getIdConta() {
@@ -80,6 +82,14 @@ public class ContaBancariaEntity implements Serializable {
         this.chequeEspecial = chequeEspecial;
     }
 
+    public double getJurosChequeEspecial() {
+        return jurosChequeEspecial;
+    }
+
+    public void setJurosChequeEspecial(double juros) {
+        this.jurosChequeEspecial = juros;
+    }
+
     @Override
     public String toString() {
         return "ContaBancariaEntity{" +
@@ -89,6 +99,7 @@ public class ContaBancariaEntity implements Serializable {
                 ", saldo=" + saldo +
                 ", limite=" + limite +
                 ", chequeEspecial=" + chequeEspecial +
+                ", jurosChequeEspecial=" + jurosChequeEspecial +
                 '}';
     }
 }
