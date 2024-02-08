@@ -51,40 +51,41 @@ public class ContaBancariaService {
         contaBancariaRepository.deleteByIdConta(idConta);
     }
 
-        public ContaBancariaEntity sacarChequeEspecial(String numConta, double valor) throws ResourceNotFoundException {
+    public ContaBancariaEntity sacarChequeEspecial(String numConta, double valor) throws ResourceNotFoundException {
             // Recupera a entidade da conta bancária pelo ID
             ContaBancariaEntity contaBancaria = contaBancariaRepository.findByConta(numConta);
 
-            boolean contaBancariaChequeEspecial = contaBancaria.getChequeEspecial();
+            boolean chequeEspecial = contaBancaria.getChequeEspecial();
             double limiteAtual = contaBancaria.getLimite();
             double saldo = contaBancaria.getSaldo();
             double valorComJuros = valor;
 
             // Verifica se o valor do saque ultrapassa o limite atual
-            if (limiteAtual == 0.00 || limiteAtual <= 0){
-                throw new ResourceNotFoundException("Saldo insuficiente e cheque especial desativado. Saque não realizado.");
-            }else if (valor > limiteAtual ){
+
+        if (valor > limiteAtual){
                 // Verifica se o cheque especial está ativo
-                if (contaBancariaChequeEspecial) {
+                if (chequeEspecial) {
                     // Calcula os juros de 2% ao dia
                     LocalDate dataSaque = LocalDate.now();
                     LocalDate dataAtual = LocalDate.now();
                     long dias = dataAtual.toEpochDay() - dataSaque.toEpochDay();
                     double juros = valor * 0.02 * dias; // Juros de 2% ao dia
                     valorComJuros = valor + juros;
-
-                    // Verifica se o limite + cheque especial é suficiente para cobrir o saque
                     if (valorComJuros > saldo) {
                         throw new IllegalArgumentException("Saldo insuficiente e cheque especial não cobre o saque com juros.");
                     }
                 } else {
                     throw new IllegalArgumentException("Saldo insuficiente e cheque especial desativado. Saque não realizado.");
                 }
-            }
-            // Deduz o valor do saque do limite da conta
-            contaBancaria.setLimite(limiteAtual - valorComJuros);
-
-            // Atualiza a entidade da conta bancária no banco de dados
-            return contaBancariaRepository.save(contaBancaria);
         }
+        // valida se limite atual é 0, se for 0 seta no banco cheque Especial false
+        if (limiteAtual == 0.00 ||  limiteAtual < 0){
+            contaBancaria.setChequeEspecial(false);
+            throw new ResourceNotFoundException("Essa conta não possui limite disponível");
+        }
+        contaBancaria.setLimite(limiteAtual - valorComJuros);
+
+        // Atualiza a entidade da conta bancária no banco de dados
+        return contaBancariaRepository.save(contaBancaria);
+    }
 }
