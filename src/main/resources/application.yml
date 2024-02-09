@@ -17,3 +17,5 @@ spring:
     port: 80
   cors:
     originPatterns: http:localhost:3000,http:localhost:8080
+  file:
+    upload-dir:/home/runner/work/code-challenge-swat/UploadDir
