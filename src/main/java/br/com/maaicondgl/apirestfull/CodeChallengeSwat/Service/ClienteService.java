@@ -1,5 +1,6 @@
 package br.com.maaicondgl.apirestfull.CodeChallengeSwat.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 import br.com.maaicondgl.apirestfull.CodeChallengeSwat.Exceptions.ResourceNotFoundException;
@@ -19,6 +20,10 @@ public class ClienteService {
 
     @Autowired
     private ContaBancariaRepository contaBancariaRepository;
+
+    public List<ClienteEntity> customerList(){
+        return clienteRepository.findAll();
+    }
 
     public Optional<ClienteEntity> searchCustomer(String cpf) {
         return clienteRepository.findById(cpf);

@@ -1,6 +1,7 @@
 package br.com.maaicondgl.apirestfull.CodeChallengeSwat.Controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -33,6 +34,10 @@ public class ClienteController {
 
     ContaBancariaEntity contaBancaria;
 
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<ClienteEntity> findAll() {
+        return clienteService.customerList();
+    }
 
     @GetMapping(value = "/consultacpf/{cpf}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> searchCustomer(@PathVariable String cpf) {

@@ -5,6 +5,7 @@ import br.com.maaicondgl.apirestfull.CodeChallengeSwat.Model.ContaBancariaEntity
 import br.com.maaicondgl.apirestfull.CodeChallengeSwat.Service.ContaBancariaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -23,6 +25,11 @@ import java.util.Map;
 public class ContaBancariaController {
     @Autowired
     private ContaBancariaService contaBancariaService;
+
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<ContaBancariaEntity> findAll() {
+        return contaBancariaService.listAccount();
+    }
 
     @PostMapping
     public ResponseEntity<ContaBancariaEntity> registerAccount(@RequestBody ContaBancariaEntity contaBancaria){

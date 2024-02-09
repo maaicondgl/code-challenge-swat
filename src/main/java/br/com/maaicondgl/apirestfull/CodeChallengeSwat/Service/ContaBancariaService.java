@@ -1,6 +1,7 @@
 package br.com.maaicondgl.apirestfull.CodeChallengeSwat.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import br.com.maaicondgl.apirestfull.CodeChallengeSwat.Exceptions.ResourceNotFoundException;
 import br.com.maaicondgl.apirestfull.CodeChallengeSwat.Model.ContaBancariaEntity;
@@ -13,7 +14,9 @@ public class ContaBancariaService {
     @Autowired
     private ContaBancariaRepository contaBancariaRepository;
 
-    private ContaBancariaEntity contaBancariaEntity;
+    public List<ContaBancariaEntity> listAccount() {
+        return contaBancariaRepository.findAll();
+    }
 
     public ContaBancariaEntity ConsultationAccount(String numConta, String numAgencia) {
         return contaBancariaRepository.findByContaAndAgencia(numConta, numAgencia);
